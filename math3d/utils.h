@@ -8,18 +8,22 @@ namespace goddice {
 
 	class Polygon {
 	public:
-		Polygon(int n) {
+		explicit Polygon(int n) {
 			points.resize(n);
 		}
+
 		Polygon(std::initializer_list<point2> pts) {
 			points.insert(points.begin(), pts.begin(), pts.end());
 		}
+
 		const point2 operator[](int i) const {
 			return points[i];
 		}
+
 		point2& operator[](int i) {
 			return points[i];
 		}
+
 		inline const int size() const {
 			return points.size();
 		}
@@ -29,10 +33,9 @@ namespace goddice {
 
 	class Line {
 	public:
-		Line(std::initializer_list<point2> pts) {
-			s = *pts.begin();
-			e = *std::next(pts.begin());
-		}
+		Line(std::initializer_list<point2> pts): 
+		s(*pts.begin()), e(*std::next(pts.begin())) {}
+
 		const point2 operator[](int i) const {
 			if (i == 0)
 				return s;
