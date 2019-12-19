@@ -24,7 +24,7 @@ namespace goddice {
 			return points[i];
 		}
 
-		inline const int size() const {
+		inline const size_t size() const {
 			return points.size();
 		}
 	private:
@@ -49,9 +49,37 @@ namespace goddice {
 				return e;
 		}
 		inline const float lengh() const {
-			return (s - e).length();
+			return glm::length(s - e);
 		}
 	private:
 		point2 s, e;
+	};
+
+	class Circle {
+	public:
+		Circle(const point2& c, const float& r) {
+			center_ = c;
+			radius_ = r;
+		}
+
+		point2& center() {
+			return center_;
+		}
+
+		const point2 center() const {
+			return center_;
+		}
+
+		float& radius() {
+			return radius_;
+		}
+
+		const float radius() const {
+			return radius_;
+		}
+
+	private:
+		point2 center_;
+		float radius_;
 	};
 }
