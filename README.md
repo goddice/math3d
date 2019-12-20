@@ -1,5 +1,5 @@
-[![status](https://www.code-inspector.com/project/2288/status/svg?service=github)](https://www.code-inspector.com/home)
-[![score](https://www.code-inspector.com/project/2288/score/svg?service=github)](https://www.code-inspector.com/home)
+[![status](https://www.code-inspector.com/project/2288/status/svg?service=github)](https://www.code-inspector.com/public/project/2288/math3d/dashboard)
+[![score](https://www.code-inspector.com/project/2288/score/svg?service=github)](https://www.code-inspector.com/public/project/2288/math3d/dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/goddice/math3d/badge?service=github)](https://www.codefactor.io/repository/github/goddice/math3d)
 
 # math3d
