@@ -32,7 +32,7 @@ TEST_CASE("Two line segments intersect", "[LineSegmentIntersection]") {
 	REQUIRE(result.y == true_result.y);
 }
 
-TEST_CASE("Boudning Circle of Acute Triangle", "[BoundingCircle]") {
+TEST_CASE("Bounding Circle of Acute Triangle", "[BoundingCircle]") {
 
 	std::vector<goddice::point2> pts = { {100, 100}, {270, 110}, {180, 315} };
 	goddice::Circle circle = goddice::tools::bounding_circle_jon(pts);
@@ -42,7 +42,7 @@ TEST_CASE("Boudning Circle of Acute Triangle", "[BoundingCircle]") {
 		canvas.addPoint(p, 5, BLRgba32(0xFFFFFFFF));
 	}
 	canvas.addCircle(circle, 3, BLRgba32(0xF0F000FF));
-	canvas.saveImage("bounding-circle-test1.bmp");
+	canvas.saveImage("imgs/bounding-circle-test1.bmp");
 
 	for (const auto& p : pts) {
 		REQUIRE(goddice::tools::point_in_circle(p, circle));
@@ -65,7 +65,7 @@ TEST_CASE("Boudning Circle of Point Set", "[BoundingCircle]") {
 		canvas.addPoint(p, 5, BLRgba32(0xFFFFFFFF));
 	}
 	canvas.addCircle(circle, 3, BLRgba32(0xF0F000FF));
-	canvas.saveImage("bounding-circle-test2.bmp");
+	canvas.saveImage("imgs/bounding-circle-test2.bmp");
 
 	for (const auto& p : pts) {
 		REQUIRE(goddice::tools::point_in_circle(p, circle));
@@ -81,7 +81,7 @@ TEST_CASE("Bounding Circle of intersection of two circles", "[BoundingCircle]") 
 	canvas.addCircle(c1, 3, BLRgba32(0xFFFFFFFF));
 	canvas.addCircle(c2, 3, BLRgba32(0xFFFFFFFF));
 	canvas.addCircle(c, 5, BLRgba32(0xF0F000FF));
-	canvas.saveImage("bounding-circle-test3.bmp");
+	canvas.saveImage("imgs/bounding-circle-test3.bmp");
 
 	std::vector<goddice::point2> pts = goddice::tools::circle_intersection(c1, c2);
 	for (const auto& p : pts) {
@@ -110,7 +110,7 @@ TEST_CASE("Appolonius's 10th problem", "[Appolonius]") {
 	canvas.addCircle(c2, 5, BLRgba32(0xFFFFFFFF));
 	canvas.addCircle(c3, 5, BLRgba32(0xFFFFFFFF));
 	canvas.addCircle(c, 2, BLRgba32(0xF0F000FF));
-	canvas.saveImage("appolonius-test.bmp");
+	canvas.saveImage("imgs/appolonius-test.bmp");
 
 	REQUIRE(goddice::tools::circle_touch(c, c1));
 	REQUIRE(goddice::tools::circle_touch(c, c2));
