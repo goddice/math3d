@@ -10,3 +10,4 @@ Algorithm implemented:
 2. Intersection of line segments
 3. Distance between point and line
 4. 2D Bounding circle algorithm for a point set (Jon Rokne, 1991)
+5. Bounding Cirle of the intersection of two circles.
