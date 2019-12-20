@@ -1,5 +1,6 @@
 #include "geomtry2d.h"
 #include <algorithm>
+#include <complex>
 
 namespace goddice {
 	float tools::polygon_area(const Polygon& poly) {
@@ -207,7 +208,6 @@ namespace goddice {
 		}
 	}
 
-
 	std::vector<point2> tools::circle_intersection(const Circle& C1, const Circle& C2) {
 		float R = glm::length(C1.center() - C2.center());
 		if (R > C1.radius() + C2.radius() || C1.radius() > R + C2.radius() || C2.radius() > R + C1.radius()) {
@@ -232,5 +232,50 @@ namespace goddice {
 			point2 v2 = v - point2(y2 - y1, x1 - x2) * t;
 			return { v1,v2 };
 		}
+	}
+
+	Circle tools::appolonius10th(const Circle& c1, const Circle& c2, const Circle& c3) {
+		std::vector<Circle> circles = { c1, c2, c3 };
+		std::sort(circles.begin(), circles.end(), [](const auto& x, const auto& y) {return x.radius() < y.radius(); });
+		std::complex<float> z1(circles[1].center().x, circles[1].center().y);
+		std::complex<float> z2(circles[2].center().x, circles[2].center().y);
+		std::complex<float> z3(circles[0].center().x, circles[0].center().y);
+		
+		float r1 = circles[1].radius() - circles[0].radius();
+		float r2 = circles[2].radius() - circles[0].radius();
+		float k1 = (std::norm(z1 - z3) - r1 * r1);
+		float k2 = (std::norm(z2 - z3) - r2 * r2);
+		auto W1 = std::conj(z1 - z3) / k1;
+		auto rho1 = r1 / k1;
+		auto W2 = std::conj(z2 - z3) / k2;
+		auto rho2 = r2 / k2;
+		auto k3 = sqrt(std::norm(W1 - W2));
+		auto cosalpha = (rho1 - rho2) / k3;
+		auto sinalpha1 = sqrt(1 - cosalpha * cosalpha);
+		auto sinalpha2 = -sinalpha1;
+		auto U1 = std::complex<float>(cosalpha, sinalpha1) * std::conj(W1 - W2) / k3;
+		auto U2 = std::complex<float>(cosalpha, -sinalpha1) * std::conj(W1 - W2) / k3;
+		auto cc1 = (W1 * U1).real() - rho1;
+		auto cc2 = (W1 * U2).real() - rho1;
+		
+		auto cc = cc1;
+		auto U = U1;
+		if (cc2 > cc1) {
+			cc = cc2;
+			U = U2;
+		}
+
+		if (cc <= 0) {
+			return Circle({ 0,0 }, 0); 
+		}
+		auto z = U / 2.f / cc + z3;
+		return Circle({ z.real(), z.imag() }, 0.5f / cc + circles[0].radius());
+	}
+
+	bool tools::circle_touch(const Circle& c1, const Circle& c2) {
+		float r1 = c1.radius();
+		float r2 = c2.radius();
+		float l = glm::length(c1.center() - c2.center());
+		return fabs(r1 + r2 - l) < FLT_EPSILON || fabs(r1 + l - r2) < FLT_EPSILON || fabs(r2 + l - r1) < FLT_EPSILON;
 	}
 }

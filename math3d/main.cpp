@@ -98,3 +98,21 @@ TEST_CASE("Intersection of two Circles", "[CircleIntersection]") {
 		REQUIRE(goddice::tools::point_in_circle(p, c2));
 	}
 }
+
+TEST_CASE("Appolonius's 10th problem", "[Appolonius]") {
+	goddice::Circle c1({ 80, 290 }, 30);
+	goddice::Circle c2({ 230, 110 }, 40);
+	goddice::Circle c3({ 310, 180 }, 60);
+	goddice::Circle c = goddice::tools::appolonius10th(c1, c2, c3);
+
+	goddice::Canvas canvas(480, 480);
+	canvas.addCircle(c1, 5, BLRgba32(0xFFFFFFFF));
+	canvas.addCircle(c2, 5, BLRgba32(0xFFFFFFFF));
+	canvas.addCircle(c3, 5, BLRgba32(0xFFFFFFFF));
+	canvas.addCircle(c, 2, BLRgba32(0xF0F000FF));
+	canvas.saveImage("appolonius-test.bmp");
+
+	REQUIRE(goddice::tools::circle_touch(c, c1));
+	REQUIRE(goddice::tools::circle_touch(c, c2));
+	REQUIRE(goddice::tools::circle_touch(c, c3));
+}

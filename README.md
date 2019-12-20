@@ -11,3 +11,4 @@ Algorithm implemented:
 3. Distance between point and line
 4. 2D Bounding circle algorithm for a point set (Jon Rokne, 1991)
 5. Bounding Cirle of the intersection of two circles.
+6. Appolonius's 10th Problem: construction of the smallest circle touching three circles from the outside.
