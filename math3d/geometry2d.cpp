@@ -63,7 +63,7 @@ namespace goddice {
 		return false;
 	}
 	int tools::orientation(const point2& p, const point2& q, const point2& r) {
-		int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+		float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
 		if (val == 0) return 0;  // colinear 
 		return (val > 0) ? 1 : 2; // clock or counterclock wise 
 	}
@@ -95,7 +95,7 @@ namespace goddice {
 
 	Circle tools::bounding_circle_two_points(const point2& p, const point2& q) {
 		point2 c = (p + q) * 0.5f;
-		return Circle(c, 0.5 * glm::length(p - q));
+		return Circle(c, 0.5f * glm::length(p - q));
 	}
 
 	Circle tools::bounding_circle_tri(const point2& p, const point2& q, const point2& r) {
@@ -143,7 +143,6 @@ namespace goddice {
 				vec2 v = p - P;
 				float vl = glm::length(v);
 				if (vl > FLT_EPSILON) {
-					vec2 v = p - P;
 					float score = abs(glm::dot(v, xaxis)) / vl;
 					if (score > best_score) {
 						Q = p;
@@ -193,8 +192,7 @@ namespace goddice {
 			return bounding_circle_tri(P, Q, R);
 		}
 	}
-
-
+	
 	Circle tools::bounding_circle_inter_circles(const Circle& P, const Circle& Q) {
 		float l = glm::length(P.center() - Q.center());
 		if (l > P.radius() + Q.radius()) {
@@ -207,7 +205,7 @@ namespace goddice {
 			return Q;
 		}
 		else {
-			float z = (l * l + P.radius() * P.radius() - Q.radius() * Q.radius()) / l * 0.5;
+			float z = (l * l + P.radius() * P.radius() - Q.radius() * Q.radius()) / l * 0.5f;
 			float t = sqrt(P.radius() * P.radius() - z * z);
 			point2 R = P.center() - (P.center() - Q.center()) * z / l;
 			return Circle(R, t);

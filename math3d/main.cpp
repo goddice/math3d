@@ -1,10 +1,9 @@
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
-#include "utils.h"
+#include "geometry_utils.h"
+#include "drawing_utils.h"
 #include "geomtry2d.h"
 #include <random>
-
-#include <blend2d.h>
 
 TEST_CASE("The area of a polygon is calculated", "[PolygonArea]") {
 	goddice::Polygon hex = {
@@ -38,30 +37,12 @@ TEST_CASE("Boudning Circle of Acute Triangle", "[BoundingCircle]") {
 	std::vector<goddice::point2> pts = { {100, 100}, {270, 110}, {180, 315} };
 	goddice::Circle circle = goddice::tools::bounding_circle_jon(pts);
 
-	BLImage img(480, 480, BL_FORMAT_PRGB32);
-	// Attach a rendering context into `img`.
-	BLContext ctx(img);
-
-	// Clear the image.
-	ctx.setCompOp(BL_COMP_OP_SRC_COPY);
-	ctx.fillAll();
-
-	ctx.setFillStyle(BLRgba32(0xFFFFFFFF));
-	ctx.fillCircle(pts[0].x, pts[0].y, 5);
-	ctx.fillCircle(pts[1].x, pts[1].y, 5);
-	ctx.fillCircle(pts[2].x, pts[2].y, 5);
-
-	ctx.setStrokeStyle(BLRgba32(0xF0F000FF));
-	ctx.setStrokeWidth(5);
-	ctx.strokeCircle(circle.center().x, circle.center().y, circle.radius());
-
-	// Detach the rendering context from `img`.
-	ctx.end();
-
-	// Let's use some built-in codecs provided by Blend2D.
-	BLImageCodec codec;
-	codec.findByName("BMP");
-	img.writeToFile("bounding-circle-test1.bmp", codec);
+	goddice::Canvas canvas(480, 480);
+	for (const auto& p : pts) {
+		canvas.addPoint(p, 5, BLRgba32(0xFFFFFFFF));
+	}
+	canvas.addCircle(circle, 3, BLRgba32(0xF0F000FF));
+	canvas.saveImage("bounding-circle-test1.bmp");
 
 	for (const auto& p : pts) {
 		REQUIRE(goddice::tools::point_in_circle(p, circle));
@@ -77,33 +58,14 @@ TEST_CASE("Boudning Circle of Point Set", "[BoundingCircle]") {
 	for (int i = 0; i < 12; ++i) {
 		pts.emplace_back(goddice::point2(dist(rng), dist(rng)));
 	}
-
 	goddice::Circle circle = goddice::tools::bounding_circle_jon(pts);
 
-	BLImage img(480, 480, BL_FORMAT_PRGB32);
-	// Attach a rendering context into `img`.
-	BLContext ctx(img);
-
-	// Clear the image.
-	ctx.setCompOp(BL_COMP_OP_SRC_COPY);
-	ctx.fillAll();
-
-	ctx.setFillStyle(BLRgba32(0xFFFFFFFF));
+	goddice::Canvas canvas(480, 480);
 	for (const auto& p : pts) {
-		ctx.fillCircle(p.x, p.y, 5);
+		canvas.addPoint(p, 5, BLRgba32(0xFFFFFFFF));
 	}
-
-	ctx.setStrokeStyle(BLRgba32(0xF0F000FF));
-	ctx.setStrokeWidth(5);
-	ctx.strokeCircle(circle.center().x, circle.center().y, circle.radius());
-
-	// Detach the rendering context from `img`.
-	ctx.end();
-
-	// Let's use some built-in codecs provided by Blend2D.
-	BLImageCodec codec;
-	codec.findByName("BMP");
-	img.writeToFile("bounding-circle-test2.bmp", codec);
+	canvas.addCircle(circle, 3, BLRgba32(0xF0F000FF));
+	canvas.saveImage("bounding-circle-test2.bmp");
 
 	for (const auto& p : pts) {
 		REQUIRE(goddice::tools::point_in_circle(p, circle));
@@ -115,32 +77,11 @@ TEST_CASE("Bounding Circle of intersection of two circles", "[BoundingCircle]") 
 	goddice::Circle c2({ 230, 180 }, 120);
 	goddice::Circle c = goddice::tools::bounding_circle_inter_circles(c1, c2);
 
-	BLImage img(480, 480, BL_FORMAT_PRGB32);
-	// Attach a rendering context into `img`.
-	BLContext ctx(img);
-
-	// Clear the image.
-	ctx.setCompOp(BL_COMP_OP_SRC_COPY);
-	ctx.fillAll();
-
-	ctx.setStrokeStyle(BLRgba32(0xFFFFFFFF));
-	ctx.setStrokeWidth(3);
-	ctx.strokeCircle(c1.center().x, c1.center().y, c1.radius());
-
-	ctx.setStrokeStyle(BLRgba32(0xFFFFFFFF));
-	ctx.setStrokeWidth(3);
-	ctx.strokeCircle(c2.center().x, c2.center().y, c2.radius());
-
-	ctx.setStrokeStyle(BLRgba32(0xF0F000FF));
-	ctx.setStrokeWidth(5);
-	ctx.strokeCircle(c.center().x, c.center().y, c.radius());
-	// Detach the rendering context from `img`.
-	ctx.end();
-
-	// Let's use some built-in codecs provided by Blend2D.
-	BLImageCodec codec;
-	codec.findByName("BMP");
-	img.writeToFile("bounding-circle-test3.bmp", codec);
+	goddice::Canvas canvas(480, 480);
+	canvas.addCircle(c1, 3, BLRgba32(0xFFFFFFFF));
+	canvas.addCircle(c2, 3, BLRgba32(0xFFFFFFFF));
+	canvas.addCircle(c, 5, BLRgba32(0xF0F000FF));
+	canvas.saveImage("bounding-circle-test3.bmp");
 
 	std::vector<goddice::point2> pts = goddice::tools::circle_intersection(c1, c2);
 	for (const auto& p : pts) {

@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
+#include <string>
 
 namespace goddice {
 	using vec2 = glm::vec2;
@@ -63,15 +64,15 @@ namespace goddice {
 			return center_;
 		}
 
-		const point2 center() const {
+		inline const point2 center() const {
 			return center_;
 		}
 
-		float& radius() {
+		inline float& radius() {
 			return radius_;
 		}
 
-		const float radius() const {
+		inline const float radius() const {
 			return radius_;
 		}
 
