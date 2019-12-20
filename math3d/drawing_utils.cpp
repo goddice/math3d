@@ -1,8 +1,7 @@
 #include "drawing_utils.h"
 
 namespace goddice {
-	Canvas::Canvas(int w, int h) {
-		img = BLImage(w, h, BL_FORMAT_PRGB32);
+	Canvas::Canvas(int w, int h): img(BLImage(w, h, BL_FORMAT_PRGB32)) {
 		ctx = BLContext(img);
 
 		// Clear the image.
