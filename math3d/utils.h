@@ -57,10 +57,7 @@ namespace goddice {
 
 	class Circle {
 	public:
-		Circle(const point2& c, const float& r) {
-			center_ = c;
-			radius_ = r;
-		}
+		Circle(const point2& c, const float& r) : center_(c), radius_(r) {}
 
 		point2& center() {
 			return center_;

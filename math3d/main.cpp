@@ -33,7 +33,7 @@ TEST_CASE("Two line segments intersect", "[LineSegmentIntersection]") {
 	REQUIRE(result.y == true_result.y);
 }
 
-TEST_CASE("Boudning Circle of Acute Triangle", "[Bounding Circle]") {
+TEST_CASE("Boudning Circle of Acute Triangle", "[BoundingCircle]") {
 
 	std::vector<goddice::point2> pts = { {100, 100}, {270, 110}, {180, 315} };
 	goddice::Circle circle = goddice::tools::bounding_circle_jon(pts);
@@ -63,11 +63,12 @@ TEST_CASE("Boudning Circle of Acute Triangle", "[Bounding Circle]") {
 	codec.findByName("BMP");
 	img.writeToFile("bounding-circle-test1.bmp", codec);
 
-	int x = 1;
-	REQUIRE(x == 1);
+	for (const auto& p : pts) {
+		REQUIRE(goddice::tools::point_in_circle(p, circle));
+	}
 }
 
-TEST_CASE("Boudning Circle of Point Set", "[Bounding Circle]") {
+TEST_CASE("Boudning Circle of Point Set", "[BoundingCircle]") {
 
 	std::random_device dev;
 	std::mt19937 rng(dev());
@@ -104,6 +105,55 @@ TEST_CASE("Boudning Circle of Point Set", "[Bounding Circle]") {
 	codec.findByName("BMP");
 	img.writeToFile("bounding-circle-test2.bmp", codec);
 
-	int x = 1;
-	REQUIRE(x == 1);
+	for (const auto& p : pts) {
+		REQUIRE(goddice::tools::point_in_circle(p, circle));
+	}
+}
+
+TEST_CASE("Bounding Circle of intersection of two circles", "[BoundingCircle]") {
+	goddice::Circle c1({ 150, 310 }, 80);
+	goddice::Circle c2({ 230, 180 }, 120);
+	goddice::Circle c = goddice::tools::bounding_circle_inter_circles(c1, c2);
+
+	BLImage img(480, 480, BL_FORMAT_PRGB32);
+	// Attach a rendering context into `img`.
+	BLContext ctx(img);
+
+	// Clear the image.
+	ctx.setCompOp(BL_COMP_OP_SRC_COPY);
+	ctx.fillAll();
+
+	ctx.setStrokeStyle(BLRgba32(0xFFFFFFFF));
+	ctx.setStrokeWidth(3);
+	ctx.strokeCircle(c1.center().x, c1.center().y, c1.radius());
+
+	ctx.setStrokeStyle(BLRgba32(0xFFFFFFFF));
+	ctx.setStrokeWidth(3);
+	ctx.strokeCircle(c2.center().x, c2.center().y, c2.radius());
+
+	ctx.setStrokeStyle(BLRgba32(0xF0F000FF));
+	ctx.setStrokeWidth(5);
+	ctx.strokeCircle(c.center().x, c.center().y, c.radius());
+	// Detach the rendering context from `img`.
+	ctx.end();
+
+	// Let's use some built-in codecs provided by Blend2D.
+	BLImageCodec codec;
+	codec.findByName("BMP");
+	img.writeToFile("bounding-circle-test3.bmp", codec);
+
+	std::vector<goddice::point2> pts = goddice::tools::circle_intersection(c1, c2);
+	for (const auto& p : pts) {
+		REQUIRE(goddice::tools::point_in_circle(p, c));
+	}
+}
+
+TEST_CASE("Intersection of two Circles", "[CircleIntersection]") {
+	goddice::Circle c1({ 150, 310 }, 80);
+	goddice::Circle c2({ 230, 180 }, 120);
+	std::vector<goddice::point2> pts = goddice::tools::circle_intersection(c1, c2);
+	for (const auto& p : pts) {
+		REQUIRE(goddice::tools::point_in_circle(p, c1));
+		REQUIRE(goddice::tools::point_in_circle(p, c2));
+	}
 }

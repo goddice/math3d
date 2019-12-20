@@ -8,7 +8,10 @@ namespace goddice {
 		static bool is_line_seg_intersect(const Line& l1, const Line& l2);
 		static point2 line_seg_intersection(const Line& l1, const Line& l2);
 		static float line_point_distance(const Line& l, const point2& p);
+		static bool point_in_circle(const point2& p, const Circle& c);
 		static Circle bounding_circle_jon(const std::vector<point2>& pts);
+		static Circle bounding_circle_inter_circles(const Circle& P, const Circle& Q);
+		static std::vector<point2> circle_intersection(const Circle& C1, const Circle& C2);
 	private:
 		// Given three colinear points p, q, r, the function checks if 
 		// point q lies on line segment 'pr' 

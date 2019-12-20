@@ -74,6 +74,10 @@ namespace goddice {
 		return glm::dot(u, v) >= 0;
 	}
 
+	bool tools::point_in_circle(const point2& p, const Circle& c) {
+		return glm::length(p - c.center()) <= c.radius() + 1e-3;
+	}
+
 	// reference: https://en.wikipedia.org/wiki/Circumscribed_circle
 	Circle tools::circumcircle(const point2& A, const point2& B, const point2& C) {
 		point2 Bp = B - A;
@@ -187,6 +191,53 @@ namespace goddice {
 			}
 
 			return bounding_circle_tri(P, Q, R);
+		}
+	}
+
+
+	Circle tools::bounding_circle_inter_circles(const Circle& P, const Circle& Q) {
+		float l = glm::length(P.center() - Q.center());
+		if (l > P.radius() + Q.radius()) {
+			return Circle({ 0, 0 }, 0);
+		}
+		else if (l + P.radius() < Q.radius()) {
+			return P;
+		}
+		else if (l + Q.radius() < P.radius()) {
+			return Q;
+		}
+		else {
+			float z = (l * l + P.radius() * P.radius() - Q.radius() * Q.radius()) / l * 0.5;
+			float t = sqrt(P.radius() * P.radius() - z * z);
+			point2 R = P.center() - (P.center() - Q.center()) * z / l;
+			return Circle(R, t);
+		}
+	}
+
+
+	std::vector<point2> tools::circle_intersection(const Circle& C1, const Circle& C2) {
+		float R = glm::length(C1.center() - C2.center());
+		if (R > C1.radius() + C2.radius() || C1.radius() > R + C2.radius() || C2.radius() > R + C1.radius()) {
+			return {};
+		}
+		else if (R == C1.radius() + C2.radius()) {
+			return { C1.center() + (C2.center() - C1.center()) * C1.radius() / R };
+		}
+		else {
+			float x1 = C1.center().x;
+			float y1 = C1.center().y;
+			float x2 = C2.center().x;
+			float y2 = C2.center().y;
+			float r1 = C1.radius();
+			float r2 = C2.radius();
+			float k = (r1 * r1 - r2 * r2) / R / R;
+			float l = (r1 * r1 + r2 * r2) / R / R;
+			float t = 0.5f * sqrtf(2 * l - k * k - 1);
+			point2 v = point2(0.5 * (x1 + x2), 0.5 * (y1 + y2));
+			v = v + point2(x2 - x1, y2 - y1) * k * 0.5f;
+			point2 v1 = v + point2(y2 - y1, x1 - x2) * t;
+			point2 v2 = v - point2(y2 - y1, x1 - x2) * t;
+			return { v1,v2 };
 		}
 	}
 }
