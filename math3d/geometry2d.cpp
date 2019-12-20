@@ -129,12 +129,7 @@ namespace goddice {
 			point2 P, Q, R;
 
 			// find P with smallest Py
-			P = pts[0];
-			for (const auto& p : pts) {
-				if (p.y < P.y) {
-					P = p;
-				}
-			}
+			P = *std::min_element(pts.begin(), pts.end(), [](const auto& p1, const auto& p2) {return p1.y < p2.y; });
 
 			// find Q that PQ is closest to x axis
 			vec2 xaxis(1, 0);
